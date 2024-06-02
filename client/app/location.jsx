@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
 import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
 import { useNavigation } from 'expo-router';
-import MapView from 'react-native-maps';
+import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -76,6 +76,7 @@ export default function Location() {
                     ref={map}
                     style={{...styles.mapView, height: height - 75}}
                     onRegionChangeComplete={(e) => setLocation(e)}
+                    provider={PROVIDER_GOOGLE}
                 />
                 <View
                     style={{

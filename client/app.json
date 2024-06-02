@@ -25,7 +25,12 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.afreechameleon.howtohelp"
+      "package": "com.afreechameleon.howtohelp",
+      "config": {
+        "googleMaps": {
+            "apiKey": "AIzaSyBsxqqE8krwfNJ9yC31bLFh_bZYs_6n43E"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
