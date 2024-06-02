@@ -4,8 +4,7 @@ import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AllModal from "./modal";
-import { capitalizeFirstLetter } from "../../../lib/helper";
-import { Tabs } from "../tabview";
+import { capitalizeFirstLetter, Tabs } from "../../../lib/helper";
 import MissingImageSource from '../../../assets/missing-photos.png';
 import BackgroundSource from '../../../assets/background.png';
 

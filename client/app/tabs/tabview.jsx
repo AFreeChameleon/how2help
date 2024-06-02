@@ -1,16 +1,9 @@
 import React from 'react';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, StatusBar } from 'react-native';
-
 import AllTab from './all';
-import { green } from '../../lib/helper';
+import { green, Tabs } from '../../lib/helper';
 
-export const Tabs = {
-    All: 'all',
-    Food: 'food',
-    Health: 'health',
-    Education: 'education',
-};
 
 export default class CustomTabs extends React.Component {
     state = {
