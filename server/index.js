@@ -46,7 +46,7 @@ async function main() {
                             latitude: lat,
                             longitude: lon
                         },
-                        radius: 1500
+                        radius: 5000
                     },
                 },
                 rankPreference: 'DISTANCE'
