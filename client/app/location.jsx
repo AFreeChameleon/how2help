@@ -5,6 +5,7 @@ import MapView from 'react-native-maps';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { API_URL } from '../lib/helper';
 
 export default function Location() {
     const navigation = useNavigation();
@@ -13,6 +14,7 @@ export default function Location() {
     let zoomed = useRef(false);
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
+    const [saving, setSaving] = useState(false);
     useEffect(() => {
         (async () => {
             let { status } = await requestForegroundPermissionsAsync();
@@ -20,8 +22,8 @@ export default function Location() {
                 setErrorMsg('Permission to access location was denied');
                 return;
             }
-            let location = await getCurrentPositionAsync({});
-            setLocation(location.coords);
+            let googleLocation = await getCurrentPositionAsync({});
+            setLocation(googleLocation.coords);
         })();
     }, []);
     useEffect(() => {
@@ -40,17 +42,30 @@ export default function Location() {
 
     const saveLocation = useCallback(async () => {
         try {
-            const coords = JSON.stringify({
-                latitude: location.latitude,
-                longitude: location.longitude,
+            setSaving(true);
+            fetch(
+                `${API_URL}/postal-code?lat=${location.latitude}&lon=${location.longitude}`
+            )
+            .then(res => res.json())
+            .then(async (data) => {
+                const savedLocation = JSON.stringify({
+                    coords: {
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                    },
+                    address: data.results[0].address_components
+                });
+                await AsyncStorage.setItem('location', savedLocation);
+                navigation.navigate('index');
+            })
+            .catch((err) => console.error(err))
+            .finally(() => {
+                setSaving(false);
             });
-            await AsyncStorage.setItem('location', coords);
         } catch (e) {
             console.error(e);
-        } finally {
-            navigation.navigate('index');
         }
-    }, [location])
+    }, [location]);
 
     return (
         <View>
@@ -77,6 +92,7 @@ export default function Location() {
                     />
                 </View>
                 <Button
+                    loading={saving}
                     style={{
                         ...styles.selectButton,
                         left: (width / 2) - 75

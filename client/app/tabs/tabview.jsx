@@ -20,7 +20,7 @@ export default class CustomTabs extends React.Component {
         routes: [
             {
                 key: Tabs.All,
-                title: 'Home'
+                title: 'All'
             },
             {
                 key: Tabs.Food,
@@ -69,18 +69,42 @@ export default class CustomTabs extends React.Component {
         );
     };
 
-    _renderScene = SceneMap({
-        [Tabs.All]: AllTab,
-        [Tabs.Food]: FoodTab,
-        [Tabs.Health]: HealthTab,
-        [Tabs.Education]: EducationTab,
+    _renderScene = ({ loading, charities, error, viewPinned }) => SceneMap({
+        [Tabs.All]: ({...props}) => <AllTab
+            {...props}
+            viewPinned={viewPinned}
+            loading={loading}
+            charities={charities}
+            error={error}
+        />,
+        [Tabs.Food]: ({...props}) => <AllTab
+            {...props}
+            viewPinned={viewPinned}
+            loading={loading}
+            charities={charities.filter(c => c.category === Tabs.Food)}
+            error={error}
+        />,
+        [Tabs.Health]: ({...props}) => <AllTab
+            {...props}
+            viewPinned={viewPinned}
+            loading={loading}
+            charities={charities.filter(c => c.category === Tabs.Health)}
+            error={error}
+        />,
+        [Tabs.Education]: ({...props}) => <AllTab
+            {...props}
+            viewPinned={viewPinned}
+            loading={loading}
+            charities={charities.filter(c => c.category === Tabs.Education)}
+            error={error}
+        />,
     });
 
     render() {
         return (
             <TabView
                 navigationState={this.state}
-                renderScene={this._renderScene}
+                renderScene={(() => this._renderScene(this.props))()}
                 renderTabBar={this._renderTabBar}
                 onIndexChange={this._handleIndexChange}
             />
