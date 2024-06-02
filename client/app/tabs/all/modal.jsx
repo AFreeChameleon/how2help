@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Alert } from "react-native";
 import { Modal, Portal, PaperProvider, Button, IconButton } from "react-native-paper";
 
-import { API_URL, capitalizeFirstLetter } from "../../../lib/helper";
+import { API_URL, capitalizeFirstLetter, green } from "../../../lib/helper";
 import MissingImageSource from '../../../assets/missing-photos.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isEqual } from 'lodash';
@@ -38,7 +38,7 @@ export default function AllModal({ selectedCharity, onClose, setRefresh }) {
             if (newPinnedItems.find((item) => item.id === selectedCharity.id)) {
                 newPinnedItems = newPinnedItems.filter(item => item.id !== selectedCharity.id);
             } else {
-                newPinnedItems.push(selectedCharity);
+                newPinnedItems.push({...selectedCharity, distance: null});
             }
             if (!isEqual(newPinnedItems, pinnedItems)) {
                 setPinnedItems(newPinnedItems);
@@ -80,7 +80,7 @@ export default function AllModal({ selectedCharity, onClose, setRefresh }) {
                         <View style={[styles.row, styles.title]}>
                             <Text style={styles.charityName}>{selectedCharity.name}</Text>
                             <IconButton
-                                iconColor="green"
+                                iconColor={green}
                                 icon={pinnedItems.find(item => item.id === selectedCharity.id) ? "heart" : "heart-outline"}
                                 onPress={pinCharity}
                             />
@@ -107,12 +107,13 @@ export default function AllModal({ selectedCharity, onClose, setRefresh }) {
                                 <IconButton
                                     style={styles.mapButton}
                                     icon="map-marker"
-                                    mode="outlined"
+                                    iconColor={green}
                                     onPress={openGoogleMapsLink}
                                 />
                             </View>
                             <Button
                                 mode="contained"
+                                buttonColor={green}
                                 style={[styles.marginTopMedium]}
                                 onPress={openVolunteerLink}
                             >
@@ -161,6 +162,7 @@ const styles = StyleSheet.create({
     charityName: {
         fontSize: 16,
         fontWeight: '500',
+        width: '75%'
     },
     greyText: {
         color: '#8b8b8b'
@@ -195,6 +197,6 @@ const styles = StyleSheet.create({
         marginTop: 20
     },
     link: {
-        color: 'blue'
+        color: green
     },
 });

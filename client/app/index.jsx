@@ -6,7 +6,7 @@ import { Switch, TextInput, TouchableRipple } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CustomTabs from './tabs/tabview';
-import { API_URL } from '../lib/helper';
+import { API_URL, green } from '../lib/helper';
 
 export default function Index() {
     const navigation = useNavigation();
@@ -15,20 +15,6 @@ export default function Index() {
     const [location, setLocation] = useState(null);
     const [charities, setCharities] = useState([]);
     const [charitiesError, setCharitiesError] = useState(null);
-    const [pinnedItems, setPinnedItems] = useState([]);
-    useEffect(() => {
-        (async () => {
-            try {
-                const stringValue = await AsyncStorage.getItem('pinned');
-                if (stringValue !== null) {
-                    const jsonValue = JSON.parse(stringValue);
-                    setPinnedItems(typeof jsonValue === 'object' ? jsonValue : []);
-                }
-            } catch (err) {
-                // Create pinnedItems list
-            }
-        })();
-    }, []);
     navigation.addListener('focus', async () => {
         try {
             const jsonValue = await AsyncStorage.getItem('location');
@@ -69,7 +55,14 @@ export default function Index() {
     }, []);
 
     const locationText = useMemo(() => {
-        return location && location.address[location.address.length - 1].long_name;
+        if (!location) {
+            return '';
+        }
+        const fullAddress = location.address.map(a => a.long_name).join(', ');
+        if (fullAddress.length > 30) {
+            return fullAddress.substr(0, 29) + '...';
+        }
+        return location.address.map(a => a.long_name).join(', ');
     }, [location]);
 
     useEffect(() => {
@@ -111,7 +104,7 @@ export default function Index() {
                         {locationText}&nbsp;
                         <Link
                             href="/location"
-                            style={{ fontSize: 12, padding: 10, marginLeft: 20, color: 'green' }}
+                            style={{ fontSize: 12, padding: 10, marginLeft: 20, color: green, textDecorationLine: 'underline' }}
                         >
                             Change
                         </Link>
@@ -133,6 +126,7 @@ export default function Index() {
                         value={viewPinned}
                         onValueChange={() => setViewPinned(!viewPinned)}
                         style={{ pointerEvents: 'none' }}
+                        color={green}
                     />
                     <Text>
                         View liked charities

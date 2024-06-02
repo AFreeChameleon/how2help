@@ -1,29 +1,18 @@
 import { useState, useEffect } from "react";
-import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity } from "react-native";
+import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, ImageBackground, TouchableWithoutFeedback } from "react-native";
 import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AllModal from "./modal";
 import { API_URL, capitalizeFirstLetter } from "../../../lib/helper";
 import MissingImageSource from '../../../assets/missing-photos.png';
+import BackgroundSource from '../../../assets/background.png';
 
 export default function All({ loading, error, charities, viewPinned }) {
     const [selectedCharity, setSelectedCharity] = useState(null);
     const [pinnedItems, setPinnedItems] = useState([]);
     const [refresh, setRefresh] = useState(0);
 
-    if (loading) {
-        return <View style={[styles.container, styles.scrollable]}>
-            <View style={styles.spinnerContainer}>
-                <ActivityIndicator
-                    animating
-                />
-                <Text style={{ fontSize: 16, fontWeight: 500, marginTop: 10 }}>
-                    Loading charities...
-                </Text>
-            </View>
-        </View>;
-    }
     useEffect(() => {
         (async () => {
             try {
@@ -37,6 +26,21 @@ export default function All({ loading, error, charities, viewPinned }) {
             }
         })();
     }, [viewPinned, refresh]);
+    if (loading) {
+        return <View style={[styles.container, {height: '100%'}]}>
+            <ImageBackground resizeMode="repeat" source={BackgroundSource} style={{ height: '100%', width: '100%' }}>
+            <View style={styles.spinnerContainer}>
+                <ActivityIndicator
+                    animating
+                />
+                <Text style={{ fontSize: 16, fontWeight: 500, marginTop: 10 }}>
+                    Loading charities...
+                </Text>
+            </View>
+            </ImageBackground>
+        </View>;
+    }
+    const items = viewPinned ? pinnedItems : charities;
     return (
         <View style={styles.container}>
             <AllModal
@@ -46,50 +50,60 @@ export default function All({ loading, error, charities, viewPinned }) {
                 setPinnedItems={setPinnedItems}
                 setRefresh={() => setRefresh(refresh+1)}
             />
-            <ScrollView style={styles.scrollable} showsVerticalScrollIndicator={false}>
-                <View>
-                    {(viewPinned ? pinnedItems : charities).map((charity) => (
-                        <TouchableOpacity style={styles.charityContainer} key={charity.link} onPress={() => setSelectedCharity(charity)}>
-                            <Image
-                                source={charity.photos ?
-                                    {uri: `${API_URL}/photo?path=${charity.photos[0].name}`} :
-                                    MissingImageSource
-                                }
-                                style={styles.charityMainImage}
-                            />
-                            <View style={[styles.charityContent, charity.photos && styles.borderGreyTop]}>
-                                <View style={styles.row}>
-                                    <Text style={styles.charityName}>{charity.name}</Text>
-                                    <Text style={styles.charityDistance}>{charity.distance.toString().substr(0,3)} km</Text>
-                                </View>
-                                {charity.category && <Text style={styles.charityCategory}>
-                                    {capitalizeFirstLetter(charity.category)}
-                                </Text>}
-                                <View style={styles.row}>
-                                    <Text style={styles.charityRating}>
-                                        {charity.rating ? `${charity.rating} stars` : 'No stars'}
-                                    </Text>
-                                    {charity.flags.noOpeningHours ? (
-                                        <Text style={[
-                                            styles.charityRating,
-                                            styles.noOpeningHours
-                                        ]}>
-                                            No opening times
+            <ImageBackground source={BackgroundSource} resizeMode="repeat">
+                <ScrollView style={styles.scrollable} showsVerticalScrollIndicator={false}>
+                    <View>
+                        {items.length ? items.map((charity) => (
+                            <TouchableWithoutFeedback key={charity.link} onPress={() => setSelectedCharity(charity)}>
+                                <View style={styles.charityContainer}>
+                                <Image
+                                    source={charity.photos ?
+                                        {uri: `${API_URL}/photo?path=${charity.photos[0].name}`} :
+                                        MissingImageSource
+                                    }
+                                    style={styles.charityMainImage}
+                                />
+                                <View style={[styles.charityContent, charity.photos && styles.borderGreyTop]}>
+                                    <View style={styles.row}>
+                                        <Text style={styles.charityName}>{charity.name}</Text>
+                                        <Text style={styles.charityDistance}>{charity.distance && charity.distance.toString().substr(0,3) + ' km'}</Text>
+                                    </View>
+                                    {charity.category && <Text style={styles.charityCategory}>
+                                        {capitalizeFirstLetter(charity.category)}
+                                    </Text>}
+                                    <View style={styles.row}>
+                                        <Text style={styles.charityRating}>
+                                            {charity.rating ? `${charity.rating} stars` : 'No stars'}
                                         </Text>
-                                    ) : (
-                                        <Text style={[
-                                            styles.charityRating,
-                                            charity.openNow ? styles.open : styles.closed
-                                        ]}>
-                                            {charity.openNow ? 'Open' : 'Closed'}
-                                        </Text>
-                                    )}
+                                        {charity.flags.noOpeningHours ? (
+                                            <Text style={[
+                                                styles.charityRating,
+                                                styles.noOpeningHours
+                                            ]}>
+                                                No opening times
+                                            </Text>
+                                        ) : (
+                                            <Text style={[
+                                                styles.charityRating,
+                                                charity.openNow ? styles.open : styles.closed
+                                            ]}>
+                                                {charity.openNow ? 'Open' : 'Closed'}
+                                            </Text>
+                                        )}
+                                    </View>
                                 </View>
+                                </View>
+                            </TouchableWithoutFeedback>
+                        )) : (
+                            <View style={styles.spinnerContainer}>
+                                <Text style={{ fontSize: 16, fontWeight: 500, marginTop: 10 }}>
+                                    No results :(
+                                </Text>
                             </View>
-                        </TouchableOpacity>
-                    ))}
-                </View>
-            </ScrollView>
+                        )}
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         </View>
     );
 }
@@ -100,7 +114,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderTopColor: '#8B8B8B',
         borderTopWidth: 1,
-        backgroundColor: '#F4F4F4',
+        backgroundColor: '#EDF1ED',
     },
     charityMainImage: {
         width: '100%',
@@ -130,7 +144,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#ffffff',
         marginTop: 10,
         marginBottom: 10,
-        shadowRadius: 4,
         borderRadius: 10,
     },
     charityContent: {

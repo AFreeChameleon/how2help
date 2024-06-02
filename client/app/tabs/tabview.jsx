@@ -6,6 +6,7 @@ import FoodTab from './food';
 import AllTab from './all';
 import HealthTab from './health';
 import EducationTab from './education';
+import { green } from '../../lib/helper';
 
 const Tabs = {
     All: 'all',
@@ -133,7 +134,7 @@ const styles = StyleSheet.create({
         paddingBottom: 20
     },
     selected: {
-        borderBottomColor: '#000000',
+        borderBottomColor: green,
         borderBottomWidth: 2
     }
 });
