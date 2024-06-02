@@ -5,7 +5,6 @@ import MapView from 'react-native-maps';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
 import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { API_URL } from '../lib/helper';
 
 export default function Location() {
     const navigation = useNavigation();
@@ -44,7 +43,7 @@ export default function Location() {
         try {
             setSaving(true);
             fetch(
-                `${API_URL}/postal-code?lat=${location.latitude}&lon=${location.longitude}`
+                `${process.env.EXPO_PUBLIC_API_URL}/postal-code?lat=${location.latitude}&lon=${location.longitude}`
             )
             .then(res => res.json())
             .then(async (data) => {

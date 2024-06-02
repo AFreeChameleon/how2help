@@ -2,7 +2,7 @@ import { useCallback, useState, useEffect } from 'react';
 import { Text, View, StyleSheet, ScrollView, Image, TouchableOpacity, Linking, Alert } from "react-native";
 import { Modal, Portal, PaperProvider, Button, IconButton } from "react-native-paper";
 
-import { API_URL, capitalizeFirstLetter, green } from "../../../lib/helper";
+import { capitalizeFirstLetter, green } from "../../../lib/helper";
 import MissingImageSource from '../../../assets/missing-photos.png';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { isEqual } from 'lodash';
@@ -72,7 +72,7 @@ export default function AllModal({ selectedCharity, onClose, setRefresh }) {
                     <View>
                         <Image
                             source={selectedCharity.photos ?
-                                {uri: `${API_URL}/photo?path=${selectedCharity.photos[0].name}`} :
+                                {uri: `${process.env.EXPO_PUBLIC_API_URL}/photo?path=${selectedCharity.photos[0].name}`} :
                                 MissingImageSource
                             }
                             style={styles.charityLogo}

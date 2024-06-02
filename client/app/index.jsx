@@ -6,7 +6,7 @@ import { Switch, TextInput, TouchableRipple } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import CustomTabs from './tabs/tabview';
-import { API_URL, green } from '../lib/helper';
+import { green } from '../lib/helper';
 
 export default function Index() {
     const navigation = useNavigation();
@@ -71,7 +71,7 @@ export default function Index() {
         }
         setLoading(true);
         fetch(
-            `${API_URL}/charities?lat=${location.coords.latitude}&lon=${location.coords.longitude}`
+            `${process.env.EXPO_PUBLIC_API_URL}/charities?lat=${location.coords.latitude}&lon=${location.coords.longitude}`
         )
         .then(res => res.json())
         .then(async ({charities}) => {

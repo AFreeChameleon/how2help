@@ -30,13 +30,6 @@ async function main() {
             if (!lat || !lon) {
                 return res.status(400).send('Missing latitude/longitude.');
             }
-            //const data = await runPrompt(address);
-            //const addressRes = await axios.get(
-            //    `https://maps.googleapis.com/maps/api/place/nearbysearch/json?keyword=charity&rankby=distance&location=51.44861371509455,-2.6075653173029423&key=${process.env.GMAPS_API}`
-            //);
-            //if (addressRes.status >= 300 && addressRes.data.status === 'OK') {
-            //    return res.status(500).json({ message: 'An error occurred, please try again later.' });
-            //}
             const googleRes = await axios.post(`https://places.googleapis.com/v1/places:searchText`, {
                 textQuery: 'charity',
                 pageSize: 10,

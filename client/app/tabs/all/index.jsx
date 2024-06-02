@@ -4,7 +4,7 @@ import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AllModal from "./modal";
-import { API_URL, capitalizeFirstLetter } from "../../../lib/helper";
+import { capitalizeFirstLetter } from "../../../lib/helper";
 import MissingImageSource from '../../../assets/missing-photos.png';
 import BackgroundSource from '../../../assets/background.png';
 
@@ -58,7 +58,7 @@ export default function All({ loading, error, charities, viewPinned }) {
                                 <View style={styles.charityContainer}>
                                 <Image
                                     source={charity.photos ?
-                                        {uri: `${API_URL}/photo?path=${charity.photos[0].name}`} :
+                                        {uri: `${process.env.EXPO_PUBLIC_API_URL}/photo?path=${charity.photos[0].name}`} :
                                         MissingImageSource
                                     }
                                     style={styles.charityMainImage}
