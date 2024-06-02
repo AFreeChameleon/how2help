@@ -5,10 +5,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import AllModal from "./modal";
 import { capitalizeFirstLetter } from "../../../lib/helper";
+import { Tabs } from "../tabview";
 import MissingImageSource from '../../../assets/missing-photos.png';
 import BackgroundSource from '../../../assets/background.png';
 
-export default function All({ loading, error, charities, viewPinned }) {
+export default function All({ loading, error, charities, viewPinned, category }) {
     const [selectedCharity, setSelectedCharity] = useState(null);
     const [pinnedItems, setPinnedItems] = useState([]);
     const [refresh, setRefresh] = useState(0);
@@ -40,7 +41,10 @@ export default function All({ loading, error, charities, viewPinned }) {
             </ImageBackground>
         </View>;
     }
-    const items = viewPinned ? pinnedItems : charities;
+    let items = viewPinned ? pinnedItems : charities;
+    if (category !== Tabs.All) {
+        items = items.filter(item => item.category === category);
+    }
     return (
         <View style={styles.container}>
             <AllModal

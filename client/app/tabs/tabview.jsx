@@ -2,13 +2,10 @@ import React from 'react';
 import { TabView, SceneMap } from 'react-native-tab-view';
 import { StyleSheet, Text, View, TouchableOpacity, Animated, StatusBar } from 'react-native';
 
-import FoodTab from './food';
 import AllTab from './all';
-import HealthTab from './health';
-import EducationTab from './education';
 import { green } from '../../lib/helper';
 
-const Tabs = {
+export const Tabs = {
     All: 'all',
     Food: 'food',
     Health: 'health',
@@ -77,27 +74,31 @@ export default class CustomTabs extends React.Component {
             loading={loading}
             charities={charities}
             error={error}
+            category={Tabs.All}
         />,
         [Tabs.Food]: ({...props}) => <AllTab
             {...props}
             viewPinned={viewPinned}
             loading={loading}
-            charities={charities.filter(c => c.category === Tabs.Food)}
+            charities={charities}
             error={error}
+            category={Tabs.Food}
         />,
         [Tabs.Health]: ({...props}) => <AllTab
             {...props}
             viewPinned={viewPinned}
             loading={loading}
-            charities={charities.filter(c => c.category === Tabs.Health)}
+            charities={charities}
             error={error}
+            category={Tabs.Health}
         />,
         [Tabs.Education]: ({...props}) => <AllTab
             {...props}
             viewPinned={viewPinned}
             loading={loading}
-            charities={charities.filter(c => c.category === Tabs.Education)}
+            charities={charities}
             error={error}
+            category={Tabs.Education}
         />,
     });
 
