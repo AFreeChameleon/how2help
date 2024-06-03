@@ -2,7 +2,7 @@ import { useEffect, useState, useRef, useCallback } from 'react';
 import { StyleSheet, Text, View, useWindowDimensions, Alert } from 'react-native';
 import { useNavigation } from 'expo-router';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
-import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
+import { requestForegroundPermissionsAsync, getCurrentPositionAsync, Accuracy } from 'expo-location';
 import { ActivityIndicator, Button, Icon } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -10,7 +10,6 @@ export default function Location() {
     const navigation = useNavigation();
     const { height, width } = useWindowDimensions();
     const map = useRef();
-    let zoomed = useRef(false);
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -20,22 +19,13 @@ export default function Location() {
             setErrorMsg('Permission to access location was denied');
             return;
         }
-        let googleLocation = await getCurrentPositionAsync({});
+        let googleLocation = await getCurrentPositionAsync({
+            accuracy: Accuracy.Highest,
+            maximumAge: 10000,
+            timeout: 5000
+        });
         setLocation(googleLocation.coords);
     });
-    useEffect(() => {
-        if (!map.current || zoomed.current || !location) {
-            return;
-        }
-        map.current.setCamera({
-            center: {
-                latitude: location.latitude,
-                longitude: location.longitude,
-            },
-            zoom: 19
-        });
-        zoomed.current = true;
-    }, [location]);
 
     const saveLocation = useCallback(async () => {
         try {
@@ -79,6 +69,15 @@ export default function Location() {
                     style={{...styles.mapView, height: height - 75}}
                     onRegionChangeComplete={(e) => setLocation(e)}
                     provider={PROVIDER_GOOGLE}
+                    initialCamera={{
+                        center: {
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                        },
+                        zoom: 19,
+                        pitch: 0,
+                        heading: 0
+                    }}
                 />
                 <View
                     style={{

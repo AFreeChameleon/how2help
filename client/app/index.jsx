@@ -97,7 +97,7 @@ export default function Index() {
         <View style={styles.container}>
             <View style={styles.locationContainer}>
                 <Text style={styles.currentLocation}>
-        guh
+                    Current location
                 </Text>
                 <View style={{ display: 'flex' }}>
                     <Text style={{ fontSize: 16, fontWeight: 500 }}>
