@@ -8,9 +8,12 @@
       "distribution": "internal",
       "channel": "development"
     },
-        "preview": {
+    "preview": {
       "android": {
         "buildType": "apk"
+      },
+      "env": {
+          "EXPO_PUBLIC_API_URL": "https://hog.chameleo.dev"
       }
     },
     "preview2": {

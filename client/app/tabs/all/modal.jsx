@@ -14,7 +14,7 @@ export default function AllModal({ selectedCharity, onClose, setRefresh }) {
     const closeModal = useCallback(() => {
         onClose();
         setOpenSchedule(false);
-        setRefresh(true);
+        setRefresh();
     }, []);
     const openGoogleMapsLink  = useCallback(async () => {
         const supported = Linking.canOpenURL(selectedCharity.mapsLink);

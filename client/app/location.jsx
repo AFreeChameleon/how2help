@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef, useCallback } from 'react';
-import { StyleSheet, Text, View, useWindowDimensions } from 'react-native';
+import { StyleSheet, Text, View, useWindowDimensions, Alert } from 'react-native';
 import { useNavigation } from 'expo-router';
 import MapView, {PROVIDER_GOOGLE} from 'react-native-maps';
 import { requestForegroundPermissionsAsync, getCurrentPositionAsync } from 'expo-location';
@@ -14,17 +14,15 @@ export default function Location() {
     const [location, setLocation] = useState(null);
     const [errorMsg, setErrorMsg] = useState(null);
     const [saving, setSaving] = useState(false);
-    useEffect(() => {
-        (async () => {
-            let { status } = await requestForegroundPermissionsAsync();
-            if (status !== 'granted') {
-                setErrorMsg('Permission to access location was denied');
-                return;
-            }
-            let googleLocation = await getCurrentPositionAsync({});
-            setLocation(googleLocation.coords);
-        })();
-    }, []);
+    navigation.addListener('focus', async () => {
+        let { status } = await requestForegroundPermissionsAsync();
+        if (status !== 'granted') {
+            setErrorMsg('Permission to access location was denied');
+            return;
+        }
+        let googleLocation = await getCurrentPositionAsync({});
+        setLocation(googleLocation.coords);
+    });
     useEffect(() => {
         if (!map.current || zoomed.current || !location) {
             return;
@@ -55,11 +53,15 @@ export default function Location() {
                     address: data.results[0].address_components
                 });
                 await AsyncStorage.setItem('location', savedLocation);
-                navigation.navigate('index');
             })
-            .catch((err) => console.error(err))
+            .catch((err) => {
+                Alert.alert('An error occurred', err.message + 
+                `${process.env.EXPO_PUBLIC_API_URL}/postal-code?lat=${location.latitude}&lon=${location.longitude}`
+                );
+            })
             .finally(() => {
                 setSaving(false);
+                navigation.navigate('index');
             });
         } catch (e) {
             console.error(e);

@@ -28,7 +28,7 @@
       "package": "com.afreechameleon.howtohelp",
       "config": {
         "googleMaps": {
-            "apiKey": "AIzaSyBsxqqE8krwfNJ9yC31bLFh_bZYs_6n43E"
+            "apiKey": ""
         }
       }
     },

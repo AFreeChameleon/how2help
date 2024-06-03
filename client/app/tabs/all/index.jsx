@@ -49,9 +49,7 @@ export default function All({ loading, error, charities, viewPinned, category })
             <AllModal
                 selectedCharity={selectedCharity}
                 onClose={() => setSelectedCharity(null)}
-                pinnedItems={pinnedItems}
-                setPinnedItems={setPinnedItems}
-                setRefresh={() => setRefresh(refresh+1)}
+                setRefresh={() => setRefresh(refresh + 1)}
             />
             <ImageBackground source={BackgroundSource} resizeMode="repeat">
                 <ScrollView style={styles.scrollable} showsVerticalScrollIndicator={false}>
